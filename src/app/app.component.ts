@@ -7,6 +7,6 @@ import { RouterOutlet } from '@angular/router';
   templateUrl: './app.html',
   styleUrl: './app.css'
 })
-export class App {
-  protected title = 'angular-aert-component';
+export class AppComponent {
+  protected title = 'angular-Alert-component';
 }

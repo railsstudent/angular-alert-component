@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "angular-aert-component": {
+    "angular-alert-component": {
       "projectType": "application",
       "schematics": {},
       "root": "",
@@ -53,10 +53,10 @@
           "builder": "@angular/build:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "angular-aert-component:build:production"
+              "buildTarget": "angular-alert-component:build:production"
             },
             "development": {
-              "buildTarget": "angular-aert-component:build:development"
+              "buildTarget": "angular-alert-component:build:development"
             }
           },
           "defaultConfiguration": "development"
