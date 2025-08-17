@@ -9,9 +9,6 @@ import { OpenIconComponent } from '../icon/icon.component';
   template: `
   <div>
     @let c = config();
-    hasCloseButton: {{ hasCloseButton()}}
-    style: {{ style() }}
-    direction: {{ direction() }}
     <p class="mb-[0.75rem]">
       <span>Has close button? </span>
       <input type="checkbox" class="mr-[0.5rem]" [(ngModel)]="hasCloseButton" />
@@ -33,7 +30,6 @@ import { OpenIconComponent } from '../icon/icon.component';
       </select>
     </p>
     <p class="mb-[0.75rem]">
-      closedNotifications: {{ closedNotifications() }}
       @for (type of closedNotifications(); track type) {
         <button 
           class="mr-[0.5rem] btn"
@@ -63,10 +59,10 @@ export class AlertBarComponent {
     directions: { text: string, value: string }[]
   }>();
 
-  hasCloseButton = model(true);
-  style = model('color');
-  direction = model('horizontal');
-  closedNotifications = model<string[]>(['info', 'success', 'warning', 'error']);
+  hasCloseButton = model<boolean>();
+  style = model<string>();
+  direction = model<string>();
+  closedNotifications = model<string[]>([]);
 
   capitalize = capitalize;
 

@@ -7,9 +7,17 @@ import { AlertBarComponent } from '../alert-bar/alert-bar.component';
   selector: 'app-alert-list',
   imports: [AlertComponent, AlertBarComponent],
   template: `
-    <app-alert-bar [config]="config()" />
+    <app-alert-bar 
+      [config]="config()" 
+      [(style)]="style" 
+      [(direction)]="direction"
+      [(hasCloseButton)]="hasCloseButton" 
+      [(closedNotifications)]="closedNotifications"
+    />
     @for (alert of filteredAlerts(); track alert.type) {
-      <app-alert [type]='alert.type' (closeNotification)="handleCloseNotification($event)">
+      <app-alert [type]='alert.type' 
+        [alertConfig]="alertConfig()"
+        (closeNotification)="handleCloseNotification($event)">
         {{ alert.message }}
       </app-alert>
     }
@@ -20,6 +28,9 @@ export class AlertListComponent {
   alerts = input.required<{ type: AlertType; message: string }[]>();
 
   closedNotifications = signal<string[]>([]);
+  style = signal<string>('color');
+  direction = signal<string>('horizontal');
+  hasCloseButton = signal<boolean>(true);
 
   config = signal({
     styleLabel: "Alert styles:",
@@ -39,6 +50,12 @@ export class AlertListComponent {
   filteredAlerts = computed(() => 
     this.alerts().filter(alert => !this.closedNotifications().includes(alert.type))
   ); 
+
+  alertConfig = computed(() => ({
+    hasCloseButton: this.hasCloseButton(),
+    style: this.style(),
+    direction: this.direction()
+  }));
 
   handleCloseNotification(type: string) {
     this.closedNotifications.update((prev) => ([...prev, type ]));

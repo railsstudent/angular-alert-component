@@ -11,11 +11,13 @@ import { AlertType } from '../alert.type';
       <div role="alert" [class]="alertClasses()">
         <ng-container [ngComponentOutlet]="icon()"></ng-container>
         <span><ng-content /></span>
-        <div v-if="alertConfig.hasCloseButton">
+        @if (alertConfig().hasCloseButton) {
+        <div>
           <button class="btn btn-sm btn-primary" alt="Close button" (click)="closeAlert()">
             <app-close-icon />
           </button>
         </div>
+        }
       </div>
     }
   `,
@@ -23,6 +25,12 @@ import { AlertType } from '../alert.type';
 })
 export class AlertComponent {
   type = input.required<AlertType>();
+
+  alertConfig = input.required<{
+    hasCloseButton: boolean
+    style: string
+    direction: string
+  }>();
 
   icon = computed(() => {
     if (this.type() === 'info') {
@@ -45,9 +53,25 @@ export class AlertComponent {
         error: 'alert-error',
         success: 'alert-success'
     }[this.type()]
-})
+  });
 
-  alertClasses = computed(() => `alert ${this.alertColor()}`);
+  alertStyle = computed(() => {
+    return {
+        color: '',
+        dash: 'alert-dash',
+        soft: 'alert-soft',
+        outline: 'alert-outline'
+    }[this.alertConfig().style]
+  });
+
+  alertDirection = computed(() => {
+    return {
+        horizontal: 'alert-horizontal',
+        vertical: 'alert-vertical',
+    }[this.alertConfig().direction]
+  });
+
+  alertClasses = computed(() => `alert ${this.alertColor()} ${this.alertStyle()} ${this.alertDirection()}`);
 
   closed = signal(false);
 
