@@ -8,7 +8,7 @@ import { CloseIconComponent, ErrorIconComponent, InfoIconComponent, SuccessIconC
   imports: [NgComponentOutlet, CloseIconComponent],
   template: `
     @if (!closed()) {
-      <div role="alert" [class]="alertClasses()">
+      <div role="alert" class="mb-[0.75rem]" [class]="alertClasses()">
         <ng-container [ngComponentOutlet]="icon()" />
         <span><ng-content /></span>
         @if (alertConfig().hasCloseButton) {
@@ -31,7 +31,7 @@ export class AlertComponent {
     style: string
     direction: string
   }>();
-  
+
   alertColor = computed(() => {
     return {
         info: 'alert-info',
