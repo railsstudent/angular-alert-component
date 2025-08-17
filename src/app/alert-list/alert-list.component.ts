@@ -1,23 +1,29 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, input, signal } from '@angular/core';
+import { AlertType } from '../alert.type';
 import { AlertComponent } from '../alert/alert.component';
 
 @Component({
   selector: 'app-alert-list',
   imports: [AlertComponent],
   template: ` 
-    <app-alert type='info'>
-      New software update available.
-    </app-alert>
-    <app-alert type='success'>
-      Your purchase has been confirmed!
-    </app-alert>
-    <app-alert type='warning'>
-      Warning: Invalid email address!
-    </app-alert>
-    <app-alert type='error'>
-      Error! Task failed successfully. 
-    </app-alert>
+    @for (alert of filteredAlerts(); track alert.type) {
+      <app-alert [type]='alert.type' (closeNotification)="handleCloseNotification($event)">
+        {{ alert.message }}
+      </app-alert>
+    }
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class AlertListComponent {}
+export class AlertListComponent {
+  alerts = input.required<{ type: AlertType; message: string }[]>();
+
+  closedNotifications = signal<string[]>([]);
+
+  filteredAlerts = computed(() => 
+    this.alerts().filter(alert => !this.closedNotifications().includes(alert.type))
+  ); 
+
+  handleCloseNotification(type: string) {
+    this.closedNotifications.update((prev) => ([...prev, type ]));
+  }
+}

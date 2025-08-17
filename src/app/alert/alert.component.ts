@@ -1,20 +1,28 @@
-import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
-import { ErrorIconComponent, InfoIconComponent, SuccessIconComponent, WarningIconComponent } from '../icon/icon.component';
+import { ChangeDetectionStrategy, Component, computed, input, output, signal } from '@angular/core';
+import { CloseIconComponent, ErrorIconComponent, InfoIconComponent, SuccessIconComponent, WarningIconComponent } from '../icon/icon.component';
 import { NgComponentOutlet } from '@angular/common';
+import { AlertType } from '../alert.type';
 
 @Component({
   selector: 'app-alert',
-  imports: [NgComponentOutlet],
+  imports: [NgComponentOutlet, CloseIconComponent],
   template: `
-    <div role="alert" [class]="alertClasses()">
-      <ng-container [ngComponentOutlet]="icon()"></ng-container>
-      <span><ng-content /></span>
-    </div>
+    @if (!closed()) {
+      <div role="alert" [class]="alertClasses()">
+        <ng-container [ngComponentOutlet]="icon()"></ng-container>
+        <span><ng-content /></span>
+        <div v-if="alertConfig.hasCloseButton">
+          <button class="btn btn-sm btn-primary" alt="Close button" (click)="closeAlert()">
+            <app-close-icon />
+          </button>
+        </div>
+      </div>
+    }
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AlertComponent {
-  type = input.required<'info' | 'success' | 'warning' | 'error'>();
+  type = input.required<AlertType>();
 
   icon = computed(() => {
     if (this.type() === 'info') {
@@ -31,4 +39,13 @@ export class AlertComponent {
   });
 
   alertClasses = computed(() => `alert alert-${this.type()}`);
+
+  closed = signal(false);
+
+  closeNotification = output<string>();
+
+  closeAlert() {
+    this.closed.set(true);
+    this.closeNotification.emit(this.type());
+  }
 }
