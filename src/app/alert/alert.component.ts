@@ -1,7 +1,7 @@
-import { ChangeDetectionStrategy, Component, computed, input, output, signal } from '@angular/core';
-import { CloseIconComponent, ErrorIconComponent, InfoIconComponent, SuccessIconComponent, WarningIconComponent } from '../icon/icon.component';
 import { NgComponentOutlet } from '@angular/common';
+import { ChangeDetectionStrategy, Component, computed, input, output, signal, viewChild, ViewContainerRef } from '@angular/core';
 import { AlertType } from '../alert.type';
+import { CloseIconComponent, ErrorIconComponent, InfoIconComponent, SuccessIconComponent, WarningIconComponent } from '../icons/icon.component';
 
 @Component({
   selector: 'app-alert',
@@ -9,7 +9,7 @@ import { AlertType } from '../alert.type';
   template: `
     @if (!closed()) {
       <div role="alert" [class]="alertClasses()">
-        <ng-container [ngComponentOutlet]="icon()"></ng-container>
+        <ng-container [ngComponentOutlet]="icon()" />
         <span><ng-content /></span>
         @if (alertConfig().hasCloseButton) {
         <div>
@@ -31,21 +31,7 @@ export class AlertComponent {
     style: string
     direction: string
   }>();
-
-  icon = computed(() => {
-    if (this.type() === 'info') {
-      return InfoIconComponent;
-    } else if (this.type() === 'success') {
-      return SuccessIconComponent;
-    } else if (this.type() === 'warning') {
-      return WarningIconComponent;
-    } else if (this.type() === 'error') {
-      return ErrorIconComponent;
-    }
-
-    return InfoIconComponent;
-  });
-
+  
   alertColor = computed(() => {
     return {
         info: 'alert-info',
@@ -69,6 +55,15 @@ export class AlertComponent {
         horizontal: 'alert-horizontal',
         vertical: 'alert-vertical',
     }[this.alertConfig().direction]
+  });
+
+  icon = computed(() => {
+    return {
+        info: InfoIconComponent,
+        warning: WarningIconComponent,
+        error: ErrorIconComponent,
+        success: SuccessIconComponent,
+    }[this.type()];
   });
 
   alertClasses = computed(() => `alert ${this.alertColor()} ${this.alertStyle()} ${this.alertDirection()}`);

@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, input, model } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { capitalize } from '../capitalize';
-import { OpenIconComponent } from '../icon/icon.component';
+import { OpenIconComponent } from '../icons/icon.component';
 
 @Component({
   selector: 'app-alert-bar',
