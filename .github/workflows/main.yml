@@ -1,0 +1,53 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches:
+      - main # or your default branch
+  workflow_dispatch:  # Also allow manual trigger
+
+permissions:
+  id-token: write
+  contents: read # You might also need other permissions like contents: read
+  pages: write # If deploying to GitHub Pages
+
+jobs:
+  build-and-deploy:
+    environment: 
+      name: github-pages   # Specify the deployment environment here
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js (if needed for static site generator)
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build site (example for a static site generator)
+        run: npm run build  -- --base-href=https://railsstudent.github.io/angular-alert-component/ # or your build command
+
+      - name: Add .nojekyll file
+        run: touch dist/.nojekyll
+
+      - name: Add 404.html file
+        run: cp dist/index.html dist/404.html
+
+      - name: Configure GitHub Pages
+        uses: actions/configure-pages@v3
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./dist # or the path to your built site
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
