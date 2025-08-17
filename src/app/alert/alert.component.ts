@@ -38,7 +38,16 @@ export class AlertComponent {
     return InfoIconComponent;
   });
 
-  alertClasses = computed(() => `alert alert-${this.type()}`);
+  alertColor = computed(() => {
+    return {
+        info: 'alert-info',
+        warning: 'alert-warning',
+        error: 'alert-error',
+        success: 'alert-success'
+    }[this.type()]
+})
+
+  alertClasses = computed(() => `alert ${this.alertColor()}`);
 
   closed = signal(false);
 
