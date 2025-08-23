@@ -15,7 +15,7 @@ import { AlertBarComponent } from '../alert-bar/alert-bar.component';
       [(closedNotifications)]="closedNotifications"
     />
     @for (alert of filteredAlerts(); track alert.type) {
-      <app-alert [type]='alert.type' 
+      <app-alert [type]="alert.type" 
         [alertConfig]="alertConfig()"
         (closeNotification)="handleCloseNotification($event)">
         {{ alert.message }}
