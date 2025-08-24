@@ -13,7 +13,7 @@ import { CloseIconComponent, ErrorIconComponent, InfoIconComponent, SuccessIconC
         <span><ng-content /></span>
         @if (alertConfig().hasCloseButton) {
         <div>
-          <button class="btn btn-sm btn-primary" alt="Close button" (click)="closeAlert()">
+          <button class="btn btn-sm btn-primary" title="Close button" (click)="closeAlert()">
             <app-close-icon />
           </button>
         </div>
