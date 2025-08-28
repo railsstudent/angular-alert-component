@@ -59,9 +59,9 @@ export class AlertBarComponent {
     directions: { text: string, value: string }[]
   }>();
 
-  hasCloseButton = model<boolean>();
-  style = model<string>();
-  direction = model<string>();
+  hasCloseButton = model<boolean>(true);
+  style = model<string>('color');
+  direction = model<string>('horizontal');
   closedNotifications = model<string[]>([]);
 
   capitalize = capitalize;
