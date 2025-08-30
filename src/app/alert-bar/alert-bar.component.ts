@@ -39,7 +39,7 @@ import { OpenIconComponent } from '../icons/icon.component';
           <app-open-icon />{{ capitalize(type) }}
         </button>
       }
-      @if (closedNotifications().length > 0) { 
+      @if (hasCloseButtonChanged()) { 
         <button
           class="btn btn-primary" 
           (click)="clearAllNotifications()">
@@ -81,5 +81,9 @@ export class AlertBarComponent {
 
   clearAllNotifications() {
     this.closedNotifications.set([])
+  }
+
+  hasCloseButtonChanged() {
+    return this.closedNotifications().length > 0;
   }
 }
