@@ -42,7 +42,7 @@ import { OpenIconComponent } from '../icons/icon.component';
       @if (closedNotifications().length > 0) { 
         <button
           class="btn btn-primary" 
-          (click)="closedNotifications.set([])">
+          (click)="clearAllNotifications()">
           Open all alerts
         </button>
       }
@@ -77,5 +77,9 @@ export class AlertBarComponent {
 
   removeNotification(type: string) {
     this.closedNotifications.update((prev) => prev.filter((t) => t !== type));
+  }
+
+  clearAllNotifications() {
+    this.closedNotifications.set([])
   }
 }
