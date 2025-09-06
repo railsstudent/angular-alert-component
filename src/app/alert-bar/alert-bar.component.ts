@@ -2,32 +2,27 @@ import { ChangeDetectionStrategy, Component, input, model } from '@angular/core'
 import { FormsModule } from '@angular/forms';
 import { capitalize } from '../capitalize';
 import { OpenIconComponent } from '../icons/icon.component';
+import { AlertDropdownComponent } from '../alert-dropdown/alert-dropdown.component';
 
 @Component({
   selector: 'app-alert-bar',
-  imports: [FormsModule, OpenIconComponent],
+  imports: [FormsModule, OpenIconComponent, AlertDropdownComponent],
   template: `
   <div>
     @let c = config();
     <p class="mb-[0.75rem]">
       <span>Has close button? </span>
       <input type="checkbox" class="mr-[0.5rem]" [(ngModel)]="hasCloseButton" />
-      <span>{{ c.styleLabel }}&nbsp;&nbsp;</span>
-      <select class="select select-info mr-[0.5rem]" [(ngModel)]="style">
-        @for (style of c.styles; track style.value) {
-          <option [ngValue]="style.value">
-            {{ style.text }}
-          </option>
-        }
-      </select>
-      <span>{{ c.directionLabel }}&nbsp;&nbsp;</span>
-      <select class="select select-info mr-[0.5rem]" [(ngModel)]="direction">
-        @for (direction of c.directions; track direction.value) {
-          <option [ngValue]="direction.value">
-            {{ direction.text }}
-          </option>
-        }
-      </select>
+      <app-alert-dropdown 
+        [label]="c.styleLabel" 
+        [items]="c.styles"  
+        [(selectedValue)]="style" 
+      />
+      <app-alert-dropdown 
+        [label]="c.directionLabel" 
+        [items]="c.directions" 
+        [(selectedValue)]="direction" 
+      />
     </p>
     <p class="mb-[0.75rem]">
       @for (type of closedNotifications(); track type) {
