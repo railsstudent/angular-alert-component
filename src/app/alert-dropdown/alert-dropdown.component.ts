@@ -12,6 +12,7 @@ import { FormsModule } from '@angular/forms';
             {{ style.text }}
           </option>
         }
+      </select>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
