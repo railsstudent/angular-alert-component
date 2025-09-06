@@ -1,7 +1,8 @@
-import { ChangeDetectionStrategy, Component, computed, input, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, input, signal } from '@angular/core';
+import { AlertBarComponent } from '../alert-bar/alert-bar.component';
 import { AlertType } from '../alert.type';
 import { AlertComponent } from '../alert/alert.component';
-import { AlertBarComponent } from '../alert-bar/alert-bar.component';
+import { NotificationsService } from '../services/notifications.service';
 
 @Component({
   selector: 'app-alert-list',
@@ -12,12 +13,11 @@ import { AlertBarComponent } from '../alert-bar/alert-bar.component';
       [(style)]="style" 
       [(direction)]="direction"
       [(hasCloseButton)]="hasCloseButton" 
-      [(closedNotifications)]="closedNotifications"
     />
     @for (alert of filteredAlerts(); track alert.type) {
       <app-alert [type]="alert.type" 
         [alertConfig]="alertConfig()"
-        (closeNotification)="handleCloseNotification($event)">
+        (closeNotification)="add($event)">
         {{ alert.message }}
       </app-alert>
     }
@@ -25,9 +25,10 @@ import { AlertBarComponent } from '../alert-bar/alert-bar.component';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AlertListComponent {
+  notificationService = inject(NotificationsService);
+  
   alerts = input.required<{ type: AlertType; message: string }[]>();
 
-  closedNotifications = signal<string[]>([]);
   style = signal<string>('color');
   direction = signal<string>('horizontal');
   hasCloseButton = signal<boolean>(true);
@@ -48,7 +49,8 @@ export class AlertListComponent {
   })
 
   filteredAlerts = computed(() => 
-    this.alerts().filter(alert => !this.closedNotifications().includes(alert.type))
+    this.alerts().filter(alert => 
+      !this.notificationService.closedNotifications().includes(alert.type))
   ); 
 
   alertConfig = computed(() => ({
@@ -57,7 +59,7 @@ export class AlertListComponent {
     direction: this.direction()
   }));
 
-  handleCloseNotification(type: string) {
-    this.closedNotifications.update((prev) => ([...prev, type ]));
+  add(type: string) {
+    this.notificationService.add(type);
   }
 }

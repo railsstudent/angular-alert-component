@@ -1,8 +1,9 @@
-import { ChangeDetectionStrategy, Component, input, model } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, input, model } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { AlertDropdownComponent } from '../alert-dropdown/alert-dropdown.component';
 import { capitalize } from '../capitalize';
 import { OpenIconComponent } from '../icons/icon.component';
-import { AlertDropdownComponent } from '../alert-dropdown/alert-dropdown.component';
+import { NotificationsService } from '../services/notifications.service';
 
 @Component({
   selector: 'app-alert-bar',
@@ -13,31 +14,17 @@ import { AlertDropdownComponent } from '../alert-dropdown/alert-dropdown.compone
     <p class="mb-[0.75rem]">
       <span>Has close button? </span>
       <input type="checkbox" class="mr-[0.5rem]" [(ngModel)]="hasCloseButton" />
-      <app-alert-dropdown 
-        [label]="c.styleLabel" 
-        [items]="c.styles"  
-        [(selectedValue)]="style" 
-      />
-      <app-alert-dropdown 
-        [label]="c.directionLabel" 
-        [items]="c.directions" 
-        [(selectedValue)]="direction" 
-      />
+      <app-alert-dropdown [label]="c.styleLabel" [items]="c.styles"  [(selectedValue)]="style" />
+      <app-alert-dropdown [label]="c.directionLabel" [items]="c.directions" [(selectedValue)]="direction" />
     </p>
     <p class="mb-[0.75rem]">
       @for (type of closedNotifications(); track type) {
-        <button 
-          class="mr-[0.5rem] btn"
-          [class]="getBtnClass(type)"
-          (click)="removeNotification(type)"
-        >
+        <button class="mr-[0.5rem] btn" [class]="getBtnClass(type)" (click)="remove(type)">
           <app-open-icon />{{ capitalize(type) }}
         </button>
       }
-      @if (hasCloseButtonChanged()) { 
-        <button
-          class="btn btn-primary" 
-          (click)="clearAllNotifications()">
+      @if (isNonEmpty()) { 
+        <button class="btn btn-primary" (click)="clearAll()">
           Open all alerts
         </button>
       }
@@ -47,6 +34,8 @@ import { AlertDropdownComponent } from '../alert-dropdown/alert-dropdown.compone
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AlertBarComponent {
+  notificationService = inject(NotificationsService);
+
   config = input.required<{ 
     styleLabel: string
     styles: { text: string, value: string }[]
@@ -57,7 +46,7 @@ export class AlertBarComponent {
   hasCloseButton = model<boolean>(true);
   style = model<string>('color');
   direction = model<string>('horizontal');
-  closedNotifications = model<string[]>([]);
+  closedNotifications = this.notificationService.closedNotifications;
 
   capitalize = capitalize;
 
@@ -70,15 +59,15 @@ export class AlertBarComponent {
     }[type]
   }
 
-  removeNotification(type: string) {
-    this.closedNotifications.update((prev) => prev.filter((t) => t !== type));
+  remove(type: string) {
+    this.notificationService.remove(type);
   }
 
-  clearAllNotifications() {
-    this.closedNotifications.set([])
+  clearAll() {
+    this.notificationService.clearAll();
   }
 
-  hasCloseButtonChanged() {
-    return this.closedNotifications().length > 0;
+  isNonEmpty() {
+    return this.notificationService.isNonEmpty();
   }
 }
