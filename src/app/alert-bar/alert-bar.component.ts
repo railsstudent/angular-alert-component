@@ -24,7 +24,7 @@ import { NotificationsService } from '../services/notifications.service';
         </button>
       }
       @if (isNonEmpty()) { 
-        <button class="btn btn-primary" (click)="clearAll()">
+        <button class="btn btn-primary" (click)="removeAll()">
           Open all alerts
         </button>
       }
@@ -63,8 +63,8 @@ export class AlertBarComponent {
     this.notificationService.remove(type);
   }
 
-  clearAll() {
-    this.notificationService.clearAll();
+  removeAll() {
+    this.notificationService.removeAll();
   }
 
   isNonEmpty() {

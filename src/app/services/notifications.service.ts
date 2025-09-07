@@ -11,7 +11,7 @@ export class NotificationsService {
         this.#closedNotifications.update((prev) => prev.filter((t) => t !== type));
     }
 
-    clearAll() {
+    removeAll() {
         this.#closedNotifications.set([])
     }
 
